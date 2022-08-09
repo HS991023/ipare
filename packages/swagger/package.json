@@ -33,7 +33,7 @@
     "@ipare/inject": "^1.7.8",
     "@ipare/pipe": "^1.7.8",
     "@ipare/router": "^1.7.8",
-    "openapi3-ts": "^2.0.2",
+    "openapi3-ts": "^3.0.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {

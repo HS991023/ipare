@@ -65,11 +65,13 @@ export function createDtoDecorator(callback: SetDtoValueCallback) {
               schema: parameter,
               builder,
             });
-            callback({
-              pipeRecord,
-              schema: parameter.schema,
-              builder,
-            });
+            if (isParameterObject(parameter)) {
+              callback({
+                pipeRecord,
+                schema: parameter.schema as SchemaObject,
+                builder,
+              });
+            }
           },
           target,
           propertyKey,
@@ -96,31 +98,41 @@ export function DtoIgnore() {
 
 export function DtoDefault(value: any) {
   return createDtoDecorator(({ schema }) => {
-    schema.default = value;
+    if (isSchemaObject(schema)) {
+      schema.default = value;
+    }
   });
 }
 
 export function DtoTitle(value: string) {
   return createDtoDecorator(({ schema }) => {
-    schema.title = value;
+    if (isSchemaObject(schema)) {
+      schema.title = value;
+    }
   });
 }
 
 export function DtoReadOnly() {
   return createDtoDecorator(({ schema }) => {
-    schema.readOnly = true;
+    if (isSchemaObject(schema)) {
+      schema.readOnly = true;
+    }
   });
 }
 
 export function DtoWriteOnly() {
   return createDtoDecorator(({ schema }) => {
-    schema.writeOnly = true;
+    if (isSchemaObject(schema)) {
+      schema.writeOnly = true;
+    }
   });
 }
 
 export function DtoPattern(pattern: string) {
   return createDtoDecorator(({ schema }) => {
-    schema.pattern = pattern;
+    if (isSchemaObject(schema)) {
+      schema.pattern = pattern;
+    }
   });
 }
 
@@ -166,7 +178,7 @@ export function DtoRequired() {
         schema.required.push(property);
         setPropertyValue({
           cb: ({ schema: propertySchema }) => {
-            delete propertySchema.nullable;
+            delete (propertySchema as SchemaObject).nullable;
           },
           target,
           propertyKey,
@@ -179,7 +191,6 @@ export function DtoRequired() {
         setPropertyValue({
           cb: ({ schema: parameter }) => {
             parameter.required = true;
-            parameter.schema.required = true;
           },
           target,
           propertyKey,
@@ -192,9 +203,9 @@ export function DtoRequired() {
   );
 }
 
-export function DtoAllowEmptyValue() {
+export function DtoParameterAllowEmptyValue() {
   return createDtoDecorator(({ schema }) => {
-    if (!isSchemaObject(schema)) {
+    if (isParameterObject(schema)) {
       schema.allowEmptyValue = true;
     }
   });
@@ -204,52 +215,64 @@ export function DtoArrayType(value: SchemaObject | ObjectConstructor) {
   return createDtoDecorator(({ schema, builder, pipeRecord }) => {
     if (isClass(value)) {
       ensureModelSchema(builder, value, pipeRecord);
-      schema.items = {
+      (schema as SchemaObject).items = {
         $ref: `#/components/schemas/${value.name}`,
       };
     } else {
-      schema.items = value;
+      (schema as SchemaObject).items = value;
     }
-    schema.type = "array";
+    (schema as SchemaObject).type = "array";
   });
 }
 
 export function DtoExample(example: any) {
   return createDtoDecorator(({ schema }) => {
-    schema.example = example;
+    if (isParameterObject(schema) || isSchemaObject(schema)) {
+      schema.example = example;
+    }
   });
 }
 
 export function DtoExamples(examples: Record<string, ExampleObject>) {
   return createDtoDecorator(({ schema }) => {
-    schema.examples = examples;
+    if (isParameterObject(schema) || isSchemaObject(schema)) {
+      schema.examples = examples;
+    }
   });
 }
 
 export function DtoParameterStyle(style: ParameterStyle) {
   return createDtoDecorator(({ schema }) => {
-    schema.style = style;
+    if (isParameterObject(schema)) {
+      schema.style = style;
+    }
   });
 }
 
 export function DtoNumRange(args: { min?: number; max?: number }) {
   return createDtoDecorator(({ schema }) => {
-    schema.minimum = args.min;
-    schema.maximum = args.max;
+    if (isSchemaObject(schema)) {
+      schema.minimum = args.min;
+      schema.maximum = args.max;
+    }
   });
 }
 
 export function DtoPropertiesRange(args: { min?: number; max?: number }) {
   return createDtoDecorator(({ schema }) => {
-    schema.minProperties = args.min;
-    schema.maxProperties = args.max;
+    if (isSchemaObject(schema)) {
+      schema.minProperties = args.min;
+      schema.maxProperties = args.max;
+    }
   });
 }
 
 export function DtoLengthRange(args: { min?: number; max?: number }) {
   return createDtoDecorator(({ schema }) => {
-    schema.minLength = args.min;
-    schema.maxLength = args.max;
+    if (isSchemaObject(schema)) {
+      schema.minLength = args.min;
+      schema.maxLength = args.max;
+    }
   });
 }
 
@@ -267,7 +290,9 @@ export function DtoFormat(
     | string
 ) {
   return createDtoDecorator(({ schema }) => {
-    schema.format = format;
+    if (isSchemaObject(schema)) {
+      schema.format = format;
+    }
   });
 }
 
@@ -282,18 +307,24 @@ export function DtoType(
     | "array"
 ) {
   return createDtoDecorator(({ schema }) => {
-    schema.type = type;
+    if (isSchemaObject(schema)) {
+      schema.type = type;
+    }
   });
 }
 
 export function DtoXml(value: XmlObject) {
   return createDtoDecorator(({ schema }) => {
-    schema.xml = value;
+    if (isSchemaObject(schema)) {
+      schema.xml = value;
+    }
   });
 }
 
 export function DtoEnum(...value: any[]) {
   return createDtoDecorator(({ schema }) => {
-    schema.enum = value;
+    if (isSchemaObject(schema)) {
+      schema.enum = value;
+    }
   });
 }

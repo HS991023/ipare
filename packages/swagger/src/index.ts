@@ -37,7 +37,7 @@ export {
   ApiSecurity,
   ApiServers,
   DtoDescription,
-  DtoAllowEmptyValue,
+  DtoParameterAllowEmptyValue,
   DtoDeprecated,
   DtoIgnore,
   DtoRequired,

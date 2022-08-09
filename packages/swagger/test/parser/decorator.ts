@@ -6,7 +6,7 @@ import {
   DtoReadOnly,
   DtoTitle,
   DtoWriteOnly,
-  DtoAllowEmptyValue,
+  DtoParameterAllowEmptyValue,
   DtoExample,
   DtoNumRange,
   DtoPropertiesRange,
@@ -42,7 +42,7 @@ export class TestDecoratorHeaderDto {
   @DtoReadOnly()
   @DtoPattern("^[a-z]$")
   @DtoExample("def")
-  @DtoAllowEmptyValue()
+  @DtoParameterAllowEmptyValue()
   p1!: string;
 
   @DtoExamples({
